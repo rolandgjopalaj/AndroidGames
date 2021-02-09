@@ -3,6 +3,7 @@ package com.gjopalaj.r_gj_project;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
@@ -50,6 +51,44 @@ public class GamesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intentDriveGame=new Intent(GamesActivity.this,DriveGame.class);
                 startActivity(intentDriveGame);
+            }
+        });
+
+        //////////////////////////////////////////////////////////////////////
+        Button btnSnakeCode=findViewById(R.id.btnSnakeCode);
+        btnSnakeCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://192.168.1.141/games/snake");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+        Button btnMMCode=findViewById(R.id.btnMMCode);
+        btnMMCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://192.168.1.141/games/mm");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+        Button btnTrisCode=findViewById(R.id.btnTrisCode);
+        btnTrisCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://192.168.1.141/games/tris");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+        Button btnDriveCode=findViewById(R.id.btnDriveCode);
+        btnDriveCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://192.168.1.141/games/drive");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         });
 

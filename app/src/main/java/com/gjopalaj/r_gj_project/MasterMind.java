@@ -23,7 +23,6 @@ public class MasterMind extends AppCompatActivity {
     int[] numRandom = new int[4];
     int[] numInput = new int[4];
     char[] vettSegno =new char[4];
-    int kot;
 
 
     @Override
@@ -51,8 +50,7 @@ public class MasterMind extends AppCompatActivity {
         Button btn9 =findViewById(R.id.btn9);
         /////////////////////////////////////////////////
         //    GENERATES A 4 DIGITS NUMBER
-        Carica();
-        txtKot.setText(numRandom[0]+""+numRandom[1]+""+numRandom[2]+""+numRandom[3]);
+        generate();
 
         ////////////////////////////////////////////////
         //    BUTTON LISTENERS
@@ -174,7 +172,7 @@ public class MasterMind extends AppCompatActivity {
                         vettSegno[i] = '\u263a';
                         j++;
                     }
-                    ControlloPerTuttiINumeri();
+                    controlOfAllNumbers();
                 }
                 if (j == 4)
                 {
@@ -217,8 +215,7 @@ public class MasterMind extends AppCompatActivity {
         btnNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Carica();
-                txtKot.setText(numRandom[0]+""+numRandom[1]+""+numRandom[2]+""+numRandom[3]);
+                generate();
                 txtHelp.setText("");
                 txtShow.setText("");
                 n=0;
@@ -269,7 +266,7 @@ public class MasterMind extends AppCompatActivity {
     }
 
 
-    private void Carica()//GENERATES A 4 DIGITS NUMBER
+    private void generate()//GENERATES A 4 DIGITS NUMBER
     {
         Random R = new Random();
         for(int i=0;i<4;i++)
@@ -279,7 +276,7 @@ public class MasterMind extends AppCompatActivity {
 
     }
 
-    private void ControlloPerTuttiINumeri()
+    private void controlOfAllNumbers()
     {
         for(int i=0;i<4;i++)
         {

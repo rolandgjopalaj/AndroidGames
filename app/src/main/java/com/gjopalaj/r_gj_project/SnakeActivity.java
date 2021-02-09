@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,13 +23,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Random;
 
-class Direstion
+class Direction
 {
     static String dir="right";
+    static boolean restartFlg=false;
 }
 
 public class SnakeActivity extends AppCompatActivity {
@@ -42,7 +45,6 @@ public class SnakeActivity extends AppCompatActivity {
         snakeMap=new CustomViewSnake(this);
         setContentView(snakeMap);
 
-
         ////////////////////////////////////////////////////////////////////////////////////////////
         //     SET OF THE BUTTONS WITHOUT LAYOUT
         Button up= new Button (this);
@@ -53,13 +55,15 @@ public class SnakeActivity extends AppCompatActivity {
         left.setText("LEFT");
         Button right= new Button (this);
         right.setText("RIGHT");
+        Button restart= new Button (this);
+        restart.setText("RESTART");
 
         FrameLayout.LayoutParams paramsUP = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsUP.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsUP.topMargin = 850;
+        paramsUP.topMargin = 800;
         addContentView(up, paramsUP);
 
         FrameLayout.LayoutParams paramsDown = new FrameLayout.LayoutParams(
@@ -67,7 +71,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsDown.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsDown.topMargin = 1050;
+        paramsDown.topMargin = 1000;
         addContentView(down, paramsDown);
 
         FrameLayout.LayoutParams paramsLeft = new FrameLayout.LayoutParams(
@@ -75,7 +79,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsLeft.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsLeft.topMargin = 950;
+        paramsLeft.topMargin = 900;
         paramsLeft.rightMargin =200;
         addContentView(left, paramsLeft);
 
@@ -84,9 +88,18 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsRight.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsRight.topMargin = 950;
+        paramsRight.topMargin = 900;
         paramsRight.leftMargin = 200;
         addContentView(right, paramsRight);
+
+        FrameLayout.LayoutParams paramsRestart = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+        paramsRestart.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+
+        paramsRestart.topMargin = 1100;
+        paramsRestart.leftMargin = 250;
+        addContentView(restart, paramsRestart);
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,9 +107,9 @@ public class SnakeActivity extends AppCompatActivity {
         up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Direstion.dir!="down")
+                if(Direction.dir!="down")
                 {
-                    Direstion.dir="up";
+                    Direction.dir="up";
                 }
             }
         });
@@ -104,9 +117,9 @@ public class SnakeActivity extends AppCompatActivity {
         down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Direstion.dir!="up")
+                if(Direction.dir!="up")
                 {
-                    Direstion.dir="down";
+                    Direction.dir="down";
                 }
             }
         });
@@ -114,9 +127,9 @@ public class SnakeActivity extends AppCompatActivity {
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Direstion.dir!="right")
+                if(Direction.dir!="right")
                 {
-                    Direstion.dir="left";
+                    Direction.dir="left";
                 }
             }
         });
@@ -124,12 +137,21 @@ public class SnakeActivity extends AppCompatActivity {
         right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Direstion.dir!="left")
+                if(Direction.dir!="left")
                 {
-                    Direstion.dir="right";
+                    Direction.dir="right";
                 }
             }
         });
+
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Direction.restartFlg=true;
+            }
+
+        });
+
 
     }
     private Paint paint = new Paint();
@@ -149,6 +171,7 @@ class CustomViewSnake extends View implements Runnable{
     private Thread th;
 
     private int score=0;
+    boolean gameover=false;
     //////////////
     // Snake (x,y)
     private int x[] =new  int[1000];
@@ -175,6 +198,10 @@ class CustomViewSnake extends View implements Runnable{
     public void run()
     {
         while (true) {
+            if(Direction.restartFlg==true)
+            {
+                reset();
+            }
             if (goControl() != true)
             {
                 headMove();
@@ -193,7 +220,8 @@ class CustomViewSnake extends View implements Runnable{
         ////////////////////////////////////////
         // DRAW THE MAP
         paint.setColor(Color.RED);
-        canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(Color.rgb(139,69,19));
+        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.map),0,0,null);
 
         for(int i=0;i<10;i++)
         {
@@ -208,7 +236,9 @@ class CustomViewSnake extends View implements Runnable{
         {
             canvas.drawCircle(x[i], y[i], 10, paint);
         }
-
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(30);
+        canvas.drawText("Score: "+score, 275, 50, paint);
 
     }
 
@@ -220,18 +250,17 @@ class CustomViewSnake extends View implements Runnable{
     //     GAME OVER CONTROL
     private boolean goControl()
     {
-        boolean gameover=false;
 
         if(x[0]>=690 || x[0]<=10 || y[0]>=690 || y[0]<=10)
         {
-            Direstion.dir="null";
+            Direction.dir="null";
             gameover=true;
         }
         for(int i=2;i<snakeLen;i++)
         {
             if(x[0]==x[i] && y[0]==y[i])
             {
-                Direstion.dir="null";
+                Direction.dir="null";
                 gameover=true;
 
             }
@@ -277,7 +306,7 @@ class CustomViewSnake extends View implements Runnable{
     //      The HEAD MOVE
     private void headMove()
     {
-        switch(Direstion.dir)
+        switch(Direction.dir)
         {
             case "up": y[0]-=10;
                 break;
@@ -290,6 +319,19 @@ class CustomViewSnake extends View implements Runnable{
             case "null":;
                 break;
         }
+    }
+    private void reset()
+    {
+        snakeLen = 5;
+        score=0;
+        x[0] =20;
+        y[0] =20;
+
+        xFruit = 200;
+        yFruit = 200;
+        gameover=false;
+        Direction.dir="right";
+        Direction.restartFlg=false;
     }
 }
 

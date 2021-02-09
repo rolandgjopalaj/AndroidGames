@@ -2,12 +2,15 @@ package com.gjopalaj.r_gj_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class XOGameActivity extends AppCompatActivity {
 
@@ -20,6 +23,7 @@ public class XOGameActivity extends AppCompatActivity {
     ImageView img7;
     ImageView img8;
     ImageView img9;
+    Button btnAgain;
 
     private String turn;
     private int result[];
@@ -33,6 +37,15 @@ public class XOGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_x_o_game);
+
+        btnAgain=findViewById(R.id.btnAgain);
+        btnAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                end();
+            }
+        });
+        btnAgain.setEnabled(false);
 
         turn="x";//default turn
         result=new int[10];
@@ -233,7 +246,7 @@ public class XOGameActivity extends AppCompatActivity {
         });
     }
 
-    private int controll()
+    private int control()
     {
         int aux=0;
 
@@ -287,7 +300,20 @@ public class XOGameActivity extends AppCompatActivity {
             aux=2;////////////////////////////////////  2
         }else
         {
-            aux=0;
+            int x=0;
+            for(int i=1;i<10;i++)
+            {
+                if(result[i]!=0)
+                {
+                    x++;
+                }
+            }
+            if(x==9)
+            {
+                aux=6;//to set the reset flag
+            }else{
+                aux=0;
+            }
         }
 
         return aux;
@@ -295,17 +321,39 @@ public class XOGameActivity extends AppCompatActivity {
 
     private  void gameOver()
     {
-        if(controll()==1)
+        Context context = getApplicationContext();
+
+        int duration = Toast.LENGTH_SHORT;
+        CharSequence text="";
+        Toast toast;
+
+        if(control()==1)
         {
             pointsX++;
             txtX.setText("X: "+pointsX);
-            end();
-        }else if(controll()==2)
+            text = "'X' wins!";
+            toast = Toast.makeText(context, text, duration);
+            toast.show();
+            //end();
+            btnAgain.setEnabled(true);
+        }else if(control()==2)
         {
             pointsO++;
             txtO.setText("O: "+pointsO);
-            end();
+            text = "'O' wins!'";
+            toast = Toast.makeText(context, text, duration);
+            toast.show();
+            //end();
+            btnAgain.setEnabled(true);
+        }else if(control()==6)
+        {
+            text = "DRAW!!";
+            toast = Toast.makeText(context, text, duration);
+            toast.show();
+            //end();
+            btnAgain.setEnabled(true);
         }
+
     }
     private void end()
     {
@@ -314,7 +362,7 @@ public class XOGameActivity extends AppCompatActivity {
             result[i]=0;
         }
 
-        try{Thread.sleep(200);}catch (Exception e){}
+        try{Thread.sleep(700);}catch (Exception e){}
 
         img1.setImageResource(R.drawable.clk);
         img2.setImageResource(R.drawable.clk);
@@ -325,5 +373,6 @@ public class XOGameActivity extends AppCompatActivity {
         img7.setImageResource(R.drawable.clk);
         img8.setImageResource(R.drawable.clk);
         img9.setImageResource(R.drawable.clk);
+        btnAgain.setEnabled(false);
     }
 }
