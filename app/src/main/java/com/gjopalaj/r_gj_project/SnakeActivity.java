@@ -3,12 +3,18 @@ package com.gjopalaj.r_gj_project;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.content.Context;
@@ -17,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -32,6 +39,9 @@ class Direction
 {
     static String dir="right";
     static boolean restartFlg=false;
+    static int height=690;
+    static int width=690;
+
 }
 
 public class SnakeActivity extends AppCompatActivity {
@@ -44,6 +54,16 @@ public class SnakeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         snakeMap=new CustomViewSnake(this);
         setContentView(snakeMap);
+
+        ///////////////////////////////////////////
+        //        GET SCREEN HEIGHT AND WIDTH
+        WindowManager windowManager = (WindowManager) snakeMap.getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        Direction.height=(size.y)-210;
+        Direction.width=(size.x)-10;
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         //     SET OF THE BUTTONS WITHOUT LAYOUT
@@ -63,7 +83,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsUP.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsUP.topMargin = 800;
+        paramsUP.topMargin = Direction.height-400;
         addContentView(up, paramsUP);
 
         FrameLayout.LayoutParams paramsDown = new FrameLayout.LayoutParams(
@@ -71,7 +91,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsDown.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsDown.topMargin = 1000;
+        paramsDown.topMargin = Direction.height-200;
         addContentView(down, paramsDown);
 
         FrameLayout.LayoutParams paramsLeft = new FrameLayout.LayoutParams(
@@ -79,7 +99,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsLeft.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsLeft.topMargin = 900;
+        paramsLeft.topMargin = Direction.height-300;
         paramsLeft.rightMargin =200;
         addContentView(left, paramsLeft);
 
@@ -88,7 +108,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsRight.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsRight.topMargin = 900;
+        paramsRight.topMargin = Direction.height-300;
         paramsRight.leftMargin = 200;
         addContentView(right, paramsRight);
 
@@ -97,7 +117,7 @@ public class SnakeActivity extends AppCompatActivity {
                 FrameLayout.LayoutParams.WRAP_CONTENT);
         paramsRestart.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
 
-        paramsRestart.topMargin = 1100;
+        paramsRestart.topMargin = Direction.height-100;
         paramsRestart.leftMargin = 250;
         addContentView(restart, paramsRestart);
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,8 +180,6 @@ public class SnakeActivity extends AppCompatActivity {
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1f);
     }
-
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,10 +243,10 @@ class CustomViewSnake extends View implements Runnable{
 
         for(int i=0;i<10;i++)
         {
-            canvas.drawLine(i+0,i+0,i+0,i+700, paint);
-            canvas.drawLine(i+0,i+0,i+700,i+0, paint);
-            canvas.drawLine(i+0,i+700,i+700,i+700, paint);
-            canvas.drawLine(i+700,i+0,i+700,i+700, paint);
+            canvas.drawLine(i+0,i+0,i+0,i+Direction.width, paint);
+            canvas.drawLine(i+0,i+0,i+Direction.width,i+0, paint);
+            canvas.drawLine(i+0,i+Direction.width,i+Direction.width,i+Direction.width, paint);
+            canvas.drawLine(i+Direction.width,i+0,i+Direction.width,i+Direction.width, paint);
         }
         canvas.drawCircle(xFruit, yFruit, 10, paint);
         paint.setColor(Color.GREEN);
@@ -250,8 +268,8 @@ class CustomViewSnake extends View implements Runnable{
     //     GAME OVER CONTROL
     private boolean goControl()
     {
-
-        if(x[0]>=690 || x[0]<=10 || y[0]>=690 || y[0]<=10)
+        int map=Direction.width-10;
+        if(x[0]>=map || x[0]<=10 || y[0]>=map || y[0]<=10)
         {
             Direction.dir="null";
             gameover=true;
@@ -272,11 +290,12 @@ class CustomViewSnake extends View implements Runnable{
     //     FRUIT CONTROL
     private void fruitControl()
     {
+        int aux=(Direction.width/10)-3;
         Random rand=new Random();
         if(x[0]==xFruit && y[0]==yFruit)
         {
-            xFruit=(rand.nextInt(67)+2)*10;
-            yFruit=(rand.nextInt(67)+2)*10;
+            xFruit=(rand.nextInt(aux)+2)*10;
+            yFruit=(rand.nextInt(aux)+2)*10;
             snakeLen++;
             score++;
         }

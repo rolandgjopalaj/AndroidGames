@@ -65,21 +65,21 @@ public class MenuActivity extends AppCompatActivity {
 
         //////////////////////////////////////////////////
         //
-        String id=acc.getId();
         txtNickname.setText("");
         btnGo.setEnabled(false); 
         txtNickname.setEnabled(false);
 
+        String id=acc.getId();// gets the id from the sign in
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot aux : snapshot.getChildren())
                 {
                     if(aux.child("id").getValue().toString().equals(id))
-                    {
+                    {//it controls if  the user is already registered or not
                         exist=true;
                         txtHello.setText("Welcome back ");
-                        getFromDB();
+                        getFromDB();// get the data from database
                     }
                     if(!exist)
                     {
@@ -111,20 +111,20 @@ public class MenuActivity extends AppCompatActivity {
                 dbRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot aux : snapshot.getChildren())
+                        for(DataSnapshot aux : snapshot.getChildren())//for each
                         {
                             if(aux.child("nickname").getValue().toString().equals(txtNickname.getText().toString()) && show)
-                            {
+                            {// does the control if the nickname is already picked by someone else
                                 txtHello.setText("This nickname does already exists!!");
                                 same=true;
                             }
                             if(!same)
-                            {
+                            {//if not it will get the data from the input and save it on the database
                                 user=new User(txtNickname.getText().toString(),acc.getEmail(),acc.getId(),points,"newUser");
                                 dbRef.child(user.getId()).setValue(user);
-                                show=false;
                                 txtHello.setText("You now are registered as "+txtNickname.getText().toString());
                                 getFromDB();
+                                show=false;
                                 btnGo.setEnabled(false);
                                 txtNickname.setEnabled(false);
                             }

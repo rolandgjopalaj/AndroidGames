@@ -7,10 +7,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -36,6 +39,12 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
     private int time;
     private int next;
 
+    int height;
+    int width;
+
+    int dif;
+    int start;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -48,10 +57,25 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive_game);
 
+        ///////////////////////////////////////////
+        //        GET SCREEN HEIGHT AND WIDTH
+        WindowManager windowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        height=size.y-210;
+        width=size.x-10;
+
+        dif=width/4;
+        start=width/45;
+
         //TO DELETE
         txt =findViewById(R.id.textView);
         //DECLARATION OF THE OBJECTS
         car = findViewById(R.id.imgCar);
+        car.setX(start+(dif*2));
+
         Button left=findViewById(R.id.btnLeft);
         Button right=findViewById(R.id.btnRight);
 
@@ -80,34 +104,36 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
 
         for(int i=0;i<10;i++)
         {
-            cars[i].setX(1000);
+            cars[i].setX(2000);
         }
 
 
         //////////////////////////////////////////////////////////////
-        //CAR CONTROL OVER BUTTONS
+        //                 CAR CONTROL OVER BUTTONS
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!gameOver())
                 {
-                    if(car.getX()>16)
+                    if(car.getX()-dif>0)
                     {
-                        car.setX(car.getX()-180);
+                        car.setX(car.getX()-dif);
                     }
                 }
+                txt.setText(car.getX()+" ");
             }
         });
+
         right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!gameOver())
                 {
-                    if(car.getX()<556)
+                    if(car.getX()<start+(dif*3)-10)
                     {
-                        car.setX(car.getX()+180);
+                        car.setX(car.getX()+dif);
                     }
-                }
+                }txt.setText(car.getX()+" ");
             }
         });
 
@@ -117,7 +143,6 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
     public void run()
     {
         time=0;
-        txt.setText("");
         while (gameOver()==false)
         {   //---------------------
             time++;
@@ -153,7 +178,7 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
         if(countEl>0)
         {
             int index=0;
-            if(cars[index].getY()>1000)
+            if(cars[index].getY()>1400)
             {
                 cars[index].setY(2000);
                 for(int j=0;j<countEl-1;j++)
@@ -168,6 +193,7 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
 
     private void add()
     {
+        int addP= (int) (width/24.64)-1;
         Random r=new Random();
         int aux;
         do{ aux=r.nextInt(4); } while(aux>3 || aux<0);
@@ -175,30 +201,33 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
         switch(aux)
         {
             case 0:
-                cars[countEl].setX(556);
+                cars[countEl].setX(start+(dif*3)+addP);
                 break;
             case 1:
-                cars[countEl].setX(376);
+                cars[countEl].setX(start+(dif*2)+addP);
                 break;
             case 2:
-                cars[countEl].setX(196);
+                cars[countEl].setX((start+dif)+addP);
                 break;
             case 3:
-                cars[countEl].setX(16);
+                cars[countEl].setX((start)+addP);
                 break;
         }
         cars[countEl].setY(0);
+
+        txt.setText("c "+cars[countEl].getX());
 
         countEl++;
     }
 
     private boolean gameOver()
     {
+        int cat= (int) (width/3.833333);
         boolean flag=false;
 
         for(int i=0;i<countEl;i++)
         {
-            if(cars[i].getX()==car.getX() && cars[i].getY()==720)
+            if(cars[i].getX()==car.getX() && cars[i].getY()==car.getY()-car.getHeight())
             {
                 flag=true;
             }
