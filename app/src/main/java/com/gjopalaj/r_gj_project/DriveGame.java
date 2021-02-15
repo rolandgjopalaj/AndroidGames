@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 public class DriveGame extends AppCompatActivity implements  Runnable{
@@ -29,15 +30,14 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
     private Thread th;
 
     //Cars on the other side
+    Queue<ImageView> queue;
     ImageView cars[];
     TextView txt;
-    ImageView none;
     ImageView car;
 
     //VARIABLES
     private int countEl;//count of the elements(cars)
     private int time;
-    private int next;
 
     int height;
     int width;
@@ -49,8 +49,8 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
     protected void onCreate(Bundle savedInstanceState){
 
         cars=new ImageView[10];
+        queue= new LinkedList<ImageView>();
         countEl=0;
-        next=0;
 
         th=new Thread(this);
 
@@ -72,6 +72,7 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
 
         //TO DELETE
         txt =findViewById(R.id.textView);
+
         //DECLARATION OF THE OBJECTS
         car = findViewById(R.id.imgCar);
         car.setX(start+(dif*2));
@@ -106,7 +107,7 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
         {
             cars[i].setX(2000);
         }
-
+        //////////////////////////////////////////////////////////////////
 
         //////////////////////////////////////////////////////////////
         //                 CAR CONTROL OVER BUTTONS
@@ -120,7 +121,6 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
                         car.setX(car.getX()-dif);
                     }
                 }
-                txt.setText(car.getX()+" ");
             }
         });
 
@@ -133,7 +133,7 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
                     {
                         car.setX(car.getX()+dif);
                     }
-                }txt.setText(car.getX()+" ");
+                }
             }
         });
 
@@ -143,15 +143,12 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
     public void run()
     {
         time=0;
-        while (gameOver()==false)
+        while(gameOver()==false)
         {   //---------------------
             time++;
-            if(time>300)
+            if(time>400)
             {
-                if(countEl<8)
-                {
-                    add();
-                }
+                add();
                 time=0;
             }
             //--cars moving
@@ -163,11 +160,11 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
 
     private void go()
     {
-        if(countEl>0)
+        if(!queue.isEmpty())
         {
-            for(int i=0;i<countEl;i++)
+            for(ImageView x : queue)
             {
-                cars[i].setY(cars[i].getY()+1);
+                x.setY((x.getY()+1));
             }
             try {Thread.sleep(2);} catch (InterruptedException e) {}
         }
@@ -175,17 +172,13 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
 
     private void disappear()
     {
-        if(countEl>0)
+        int out=(int)(height-car.getHeight());
+        if(!queue.isEmpty())
         {
-            int index=0;
-            if(cars[index].getY()>1400)
+            if(queue.peek().getY()>out)
             {
-                cars[index].setY(2000);
-                for(int j=0;j<countEl-1;j++)
-                {
-                    cars[j]=cars[j+1];
-                }
-                countEl--;
+                queue.peek().setY(3000);
+                queue.poll();
             }
         }
     }
@@ -193,43 +186,36 @@ public class DriveGame extends AppCompatActivity implements  Runnable{
 
     private void add()
     {
+        ImageView addC;
         int addP= (int) (width/24.64)-1;
         Random r=new Random();
         int aux;
         do{ aux=r.nextInt(4); } while(aux>3 || aux<0);
 
-        switch(aux)
-        {
-            case 0:
-                cars[countEl].setX(start+(dif*3)+addP);
-                break;
-            case 1:
-                cars[countEl].setX(start+(dif*2)+addP);
-                break;
-            case 2:
-                cars[countEl].setX((start+dif)+addP);
-                break;
-            case 3:
-                cars[countEl].setX((start)+addP);
-                break;
-        }
-        cars[countEl].setY(0);
-
-        txt.setText("c "+cars[countEl].getX());
+        addC=cars[countEl];
+        addC.setX((start+(dif*aux))+addP);
+        addC.setY(0);
+        queue.offer(addC);
 
         countEl++;
+        if(countEl>=10)
+        {
+            countEl=0;
+        }
     }
 
     private boolean gameOver()
     {
-        int cat= (int) (width/3.833333);
         boolean flag=false;
 
-        for(int i=0;i<countEl;i++)
+        if(!queue.isEmpty())
         {
-            if(cars[i].getX()==car.getX() && cars[i].getY()==car.getY()-car.getHeight())
+            for(ImageView x : queue)
             {
-                flag=true;
+                if(x.getX()==car.getX() && x.getY()==car.getY()-car.getHeight())
+                {
+                    flag=true;
+                }
             }
         }
         return  flag;
