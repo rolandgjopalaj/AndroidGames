@@ -59,7 +59,7 @@ public class GamesActivity extends AppCompatActivity {
         btnSnakeCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://192.168.1.141/games/snake");
+                Uri uri = Uri.parse("http://gjopalaj.noip.me/games/snake");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -68,7 +68,7 @@ public class GamesActivity extends AppCompatActivity {
         btnMMCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://192.168.1.141/games/mm");
+                Uri uri = Uri.parse("http://gjopalaj.noip.me/games/mm");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -77,7 +77,7 @@ public class GamesActivity extends AppCompatActivity {
         btnTrisCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://192.168.1.141/games/tris");
+                Uri uri = Uri.parse("http://gjopalaj.noip.me/games/tris");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -86,7 +86,7 @@ public class GamesActivity extends AppCompatActivity {
         btnDriveCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://192.168.1.141/games/drive");
+                Uri uri = Uri.parse("http://gjopalaj.noip.me/games/drive");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
